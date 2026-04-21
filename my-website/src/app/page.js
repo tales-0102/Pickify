@@ -177,7 +177,7 @@ export default function Home() {
       "linear-gradient(135deg, #FADADD 0%, #FFFFFF 40%, #F5E6E8 100%)",
   }}
 >
-  console.log("FEATURED PRODUCTS:", products);
+
 
   <h2
     style={{
