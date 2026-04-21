@@ -170,12 +170,15 @@ export default function Home() {
 
       {/* 🔹 FEATURED PRODUCTS (PREMIUM DESIGN) */}
 <div
+
   style={{
     padding: "80px 20px",
     background:
       "linear-gradient(135deg, #FADADD 0%, #FFFFFF 40%, #F5E6E8 100%)",
   }}
 >
+  console.log("FEATURED PRODUCTS:", products);
+
   <h2
     style={{
       textAlign: "center",
