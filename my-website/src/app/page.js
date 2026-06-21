@@ -15,6 +15,10 @@ export default function Home() {
     "/images/hero1.jpg",
     "/images/hero2.jpg",
     "/images/hero3.jpg",
+    "/images/hero7.jpg",
+    "/images/hero8.jpg",
+    "/images/hero9.jpg",
+    "/images/hero10.jpg",
   ];
 
   // Fetch products
