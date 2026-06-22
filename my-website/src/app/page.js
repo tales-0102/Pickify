@@ -93,7 +93,10 @@ const SLIDES = [
   { image: "/images/hero1.jpg" },
   { image: "/images/hero2.jpg" },
   { image: "/images/hero3.jpg" },
-  { image: "/images/hero4.jpg" },
+  { image: "/images/hero7.jpg" },
+  { image: "/images/hero8.jpg" },
+  { image: "/images/hero9.jpg" },
+  { image: "/images/hero10.jpg" },
 ];
 
 /* ─── PAGE COMPONENT ──────────────────────────── */
