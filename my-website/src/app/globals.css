@@ -670,3 +670,28 @@ button {
   .pk-masonry { columns: 2 140px; column-gap: 12px; }
   .pk-masonry > * { margin-bottom: 12px; }
 }
+/* MOBILE OVERFLOW FIX */
+@media (max-width: 768px) {
+  .pk-container,
+  .pk-grid,
+  .pk-card,
+  .pk-reveal {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .pk-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pk-card {
+    overflow: hidden;
+  }
+
+  #featured {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
