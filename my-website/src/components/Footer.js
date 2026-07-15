@@ -28,7 +28,7 @@ export default function Footer({ latestPosts = [] }) {
             so every corner of your home feels considered.
           </p>
           <a
-            href="https://pinterest.com"
+            href="https://www.pinterest.com/thepickify/"
             target="_blank"
             rel="noopener noreferrer"
             style={{

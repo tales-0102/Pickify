@@ -568,7 +568,7 @@ export default function Home() {
             back when you're ready to shop.
           </p>
           <a
-            href="https://pinterest.com"
+            href="https://www.pinterest.com/thepickify/"
             target="_blank"
             rel="noopener noreferrer"
             className="pk-btn pk-btn-gold"
