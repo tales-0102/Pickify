@@ -25,16 +25,60 @@ export function urlFor(source) {
 /* ---------------- PRODUCTS ---------------- */
 
 export async function getProducts() {
-  return await client.fetch(`*[_type == "product"] | order(_createdAt desc)`);
+  return await client.fetch(`*[_type == "product"] | order(displayOrder asc){
+
+  _id,
+  title,
+  slug,
+  images,
+  shortDescription,
+  affiliateLink,
+  badge,
+  keyFeatures,
+  pros,
+  category
+
+}`);
 }
 
 export async function getProductById(id) {
-  return await client.fetch(`*[_type == "product" && _id == $id][0]`, { id });
+  return await client.fetch(`*[_type == "product" && _id == $id][0]{
+
+  ...,
+
+  relatedProducts[]->{
+    _id,
+    title,
+    slug,
+    images,
+    badge
+  }
+
+}`, { id });
 }
+
+// export async function getRelatedProducts(id, category) {
+//   return await client.fetch(
+//     `*[_type == "product" && _id != $id && category == $category][0...4]`,
+//     { id, category: category || "" }
+//   );
+// }
 
 export async function getRelatedProducts(id, category) {
   return await client.fetch(
-    `*[_type == "product" && _id != $id && category == $category][0...4]`,
+    `*[_type == "product"
+      && _id != $id
+      && category == $category]
+      | order(displayOrder asc)[0...4]{
+        _id,
+        title,
+        slug,
+        images,
+        shortDescription,
+        badge,
+        affiliateLink,
+        keyFeatures
+      }`,
     { id, category: category || "" }
   );
 }
@@ -49,9 +93,30 @@ export async function getPosts() {
   );
 }
 
+// export async function getPostBySlug(slug) {
+//   return await client.fetch(
+//     `*[_type == "post" && slug.current == $slug][0]`,
+//     { slug }
+//   );
+// }
 export async function getPostBySlug(slug) {
   return await client.fetch(
-    `*[_type == "post" && slug.current == $slug][0]`,
+    `*[_type == "post" && slug.current == $slug][0]{
+      ...,
+
+      featuredProducts[]->{
+        _id,
+        title,
+        slug,
+        images,
+        shortDescription,
+        affiliateLink,
+        badge,
+        keyFeatures,
+        pros
+      }
+
+    }`,
     { slug }
   );
 }

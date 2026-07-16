@@ -7,7 +7,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
-import { urlFor, getPostBySlug, getRelatedPosts } from "../../../sanity";
+// import { urlFor, getPostBySlug, getRelatedPosts } from "../../../sanity";
+import {
+  urlFor,
+  getPostBySlug,
+  getRelatedPosts,
+} from "../../../sanity";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Reveal from "../../../components/Reveal";
@@ -54,19 +59,38 @@ const portableComponents = {
 export default function BlogPostPage() {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
+  // const [related, setRelated] = useState([]);
   const [related, setRelated] = useState([]);
+const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // useEffect(() => {
+  //   if (!slug) return;
+  //   getPostBySlug(slug).then((p) => {
+  //     setPost(p);
+  //     setLoading(false);
+  //     if (p?.category) {
+  //       getRelatedPosts(p._id, p.category).then(setRelated);
+  //     }
+  //   });
+  // }, [slug]);
+
   useEffect(() => {
-    if (!slug) return;
-    getPostBySlug(slug).then((p) => {
-      setPost(p);
-      setLoading(false);
-      if (p?.category) {
-        getRelatedPosts(p._id, p.category).then(setRelated);
-      }
-    });
-  }, [slug]);
+  if (!slug) return;
+
+  getPostBySlug(slug).then((p) => {
+    setPost(p);
+
+    // Featured Products from Sanity
+    setFeaturedProducts(p?.featuredProducts || []);
+
+    setLoading(false);
+
+    if (p?.category) {
+      getRelatedPosts(p._id, p.category).then(setRelated);
+    }
+  });
+}, [slug]);
 
   if (loading) {
     return (
@@ -151,6 +175,174 @@ export default function BlogPostPage() {
         </div>
 
         {post.body && <PortableText value={post.body} components={portableComponents} />}
+        {/* FEATURED PRODUCTS */}
+
+{post.featuredProducts &&
+post.featuredProducts.length > 0 && (
+
+<section
+style={{
+marginTop:60,
+marginBottom:40
+}}
+>
+
+<h2
+style={{
+fontSize:32,
+marginBottom:10
+}}
+>
+Products Featured In This Guide
+</h2>
+
+<p
+style={{
+color:"#666",
+marginBottom:35
+}}
+>
+These are the exact products recommended in this article.
+</p>
+
+<div
+style={{
+display:"grid",
+gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",
+gap:30
+}}
+>
+
+{post.featuredProducts.map((product)=>{
+
+return(
+
+<div
+key={product._id}
+style={{
+background:"#fff",
+borderRadius:18,
+overflow:"hidden",
+boxShadow:"0 15px 35px rgba(0,0,0,.08)"
+}}
+>
+
+<Link
+href={`/product/${product._id}`}
+style={{
+textDecoration:"none",
+color:"inherit"
+}}
+>
+
+<img
+src={urlFor(product.images[0]).width(700).url()}
+alt={product.title}
+style={{
+width:"100%",
+height:250,
+objectFit:"cover"
+}}
+/>
+
+<div
+style={{
+padding:24
+}}
+>
+
+{product.badge && (
+
+<div
+style={{
+display:"inline-block",
+background:"#d4af37",
+color:"#fff",
+padding:"6px 12px",
+borderRadius:50,
+fontSize:12,
+marginBottom:14
+}}
+>
+{product.badge}
+</div>
+
+)}
+
+<h3
+style={{
+fontSize:22,
+marginBottom:12,
+lineHeight:1.3
+}}
+>
+{product.title}
+</h3>
+
+<p
+style={{
+color:"#666",
+lineHeight:1.8,
+marginBottom:18
+}}
+>
+{product.shortDescription}
+</p>
+
+{product.keyFeatures &&
+product.keyFeatures.length>0 && (
+
+<ul
+style={{
+paddingLeft:18,
+marginBottom:20
+}}
+>
+
+{product.keyFeatures
+.slice(0,4)
+.map((item,index)=>(
+
+<li
+key={index}
+style={{
+marginBottom:8,
+color:"#444"
+}}
+>
+{item}
+</li>
+
+))}
+
+</ul>
+
+)}
+
+<div
+className="pk-btn pk-btn-gold"
+style={{
+display:"inline-flex"
+}}
+>
+View Product →
+</div>
+
+</div>
+
+</Link>
+
+</div>
+
+)
+
+})}
+
+</div>
+
+</section>
+
+)}
 
         {/* SOCIAL SHARE */}
         <div

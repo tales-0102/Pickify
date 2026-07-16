@@ -89,6 +89,20 @@ export default defineType({
       type: "image",
       description: "Defaults to hero image if left empty.",
     }),
+
+    defineField({
+  name: "featuredProducts",
+  title: "Featured Products",
+  description:
+    "Select one or more products to display inside this blog post.",
+  type: "array",
+  of: [
+    {
+      type: "reference",
+      to: [{ type: "product" }],
+    },
+  ],
+}),
   ],
   preview: {
     select: { title: "title", media: "heroImage", subtitle: "category" },
