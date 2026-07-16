@@ -164,7 +164,7 @@ export default function BlogPostPage() {
         >
           <span style={{ fontSize: 13, color: "#6b5d52", alignSelf: "center" }}>Share:</span>
           <a
-            href={`https://www.pinterest.com/thepickify//pin/create/button/?url=${encodeURIComponent(shareUrl)}`}
+            href={`https://www.pinterest.com/thepickify/git pushj/pin/create/button/?url=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="pk-btn pk-btn-outline"

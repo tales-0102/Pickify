@@ -23,6 +23,9 @@ export const metadata = {
   title: "Pickify — Curated Home & Kitchen Organization",
   description:
     "Editorial picks for a calmer, more beautiful home. Pickify curates the best Amazon finds for kitchen and home organization.",
+    verification: {
+  google: "gaL1xG8k-prpykvjQhLjNbm_H_ONUwtr82_oKs8ijFc",
+},
 };
 
 export default function RootLayout({ children }) {
