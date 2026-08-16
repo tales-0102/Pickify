@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 // PATH: my-website/src/app/buying-guides/[slug]/page.js
@@ -11,7 +8,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
 import { getBuyingGuideBySlug, urlFor } from "../../../sanity";
-import { getAffiliateCta } from "../../../lib/affiliateUtils";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Reveal from "../../../components/Reveal";
@@ -52,7 +48,19 @@ const portableComponents = {
   },
 };
 
-/* affiliateCTA replaced by shared getAffiliateCta from lib/affiliateUtils.js */
+/* ── Affiliate source label helper (future-ready) ── */
+function affiliateCTA(link) {
+  if (!link) return { label: "View Product", href: "#" };
+  try {
+    const url = new URL(link);
+    if (url.hostname.includes("amazon"))  return { label: "Check Price on Amazon →", href: link };
+    if (url.hostname.includes("etsy"))    return { label: "Shop on Etsy →",          href: link };
+    if (url.hostname.includes("walmart")) return { label: "View on Walmart →",       href: link };
+    return { label: "View Product →", href: link };
+  } catch {
+    return { label: "View Product →", href: link };
+  }
+}
 
 export default function BuyingGuidePage() {
   const { slug } = useParams();
@@ -286,7 +294,7 @@ export default function BuyingGuidePage() {
                 const p = rec.product;
                 if (!p) return null;
                 const images = p.images || [];
-                const cta    = getAffiliateCta(p);   // {label, href, source} — from affiliateUtils
+                const cta    = affiliateCTA(p.link);
 
                 return (
                   <Reveal key={p._id || i} delay={i * 60}>
