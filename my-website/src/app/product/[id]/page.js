@@ -1,104 +1,1127 @@
+// "use client";
 
+// // FILE PATH: src/app/product/[id]/page.js
+// // STATUS: REPLACE EXISTING FILE
+
+// import { useEffect, useState } from "react";
+// import { useParams } from "next/navigation";
+// import Link from "next/link";
+// import { client, urlFor, getProductById, getRelatedProducts } from "../../../sanity";
+// import Navbar from "../../../components/Navbar";
+// import Footer from "../../../components/Footer";
+// import Reveal from "../../../components/Reveal";
+// import FaqAccordion from "../../../components/FaqAccordion";
+
+// export default function ProductPage() {
+//   const { id } = useParams();
+//   const [product, setProduct] = useState(null);
+//   const [related, setRelated] = useState([]);
+//   const [activeImg, setActiveImg] = useState(0);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (!id) return;
+//     getProductById(id).then((p) => {
+//       setProduct(p);
+//       setLoading(false);
+//       if (p?.category) {
+//         getRelatedProducts(id, p.category).then(setRelated);
+//       }
+//     });
+//   }, [id]);
+
+//   if (loading) {
+//     return (
+//       <div>
+//         <Navbar />
+//         <div style={{ paddingTop: 160, textAlign: "center", color: "#6b5d52" }}>
+//           Loading product…
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (!product) {
+//     return (
+//       <div>
+//         <Navbar />
+//         <div style={{ paddingTop: 160, textAlign: "center" }}>
+//           <h2 className="pk-section-title">Product not found</h2>
+//           <Link href="/" className="pk-btn pk-btn-primary" style={{ marginTop: 20, display: "inline-flex" }}>
+//             Back to Pickify
+//           </Link>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const images = product.images || [];
+//   const highlights = product.highlights || [];
+//   const pros = product.pros || [];
+//   const bestFor = product.bestFor || [];
+//   const faqItems = product.faq && product.faq.length > 0
+//     ? product.faq
+//     : [
+//         {
+//           q: "Will this fit my space?",
+//           a: "Check the dimensions on the Amazon listing — most Pickify picks are designed to adapt to standard cabinet, fridge, and drawer sizes.",
+//         },
+//         {
+//           q: "Is this product covered by a warranty?",
+//           a: "Warranty terms are set by the seller on Amazon and are visible on the product listing before checkout.",
+//         },
+//         {
+//           q: "Does Pickify ship this product?",
+//           a: "No — Pickify links directly to Amazon, who handles shipping, payment, and returns.",
+//         },
+//       ];
+
+//   return (
+//     <div className="pk-no-scroll-x" style={{ paddingBottom: 90 }}>
+//       <Navbar />
+
+//       {/* BREADCRUMB */}
+//       <div className="pk-container" style={{ marginTop: 110, fontSize: 13, color: "#8a7a6d" }}>
+//         <Link href="/" style={{ textDecoration: "none", color: "#8a7a6d" }}>
+//           Pickify
+//         </Link>{" "}
+//         / <span style={{ color: "var(--espresso)" }}>{product.title}</span>
+//       </div>
+
+//       {/* GALLERY + INFO */}
+//       <section className="pk-container" style={{ marginTop: 24 }}>
+//         <div
+//           style={{
+//             display: "grid",
+//             gridTemplateColumns: images.length ? "1fr 1fr" : "1fr",
+//             gap: 48,
+//           }}
+//           className="pk-product-grid"
+//         >
+//           {/* GALLERY */}
+//           {images.length > 0 && (
+//             <div>
+//               <div
+//                 className="pk-img-zoom"
+//                 style={{
+//                   borderRadius: "var(--radius-lg)",
+//                   overflow: "hidden",
+//                   boxShadow: "var(--shadow-soft)",
+//                   background: "#fff",
+//                 }}
+//               >
+//                 <img
+//                   src={urlFor(images[activeImg]).width(800).height(600).url()}
+//                   alt={product.title}
+//                   style={{ width: "100%", height: 480, objectFit: "cover" }}
+//                 />
+//               </div>
+//               {images.length > 1 && (
+//                 <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
+//                   {images.map((img, i) => (
+//                     <button
+//                       key={i}
+//                       onClick={() => setActiveImg(i)}
+//                       style={{
+//                         border:
+//                           activeImg === i
+//                             ? "2px solid var(--gold)"
+//                             : "2px solid transparent",
+//                         borderRadius: 10,
+//                         padding: 0,
+//                         cursor: "pointer",
+//                         overflow: "hidden",
+//                         width: 72,
+//                         height: 72,
+//                         background: "none",
+//                       }}
+//                     >
+//                       <img
+//                         src={urlFor(img).width(100).height(100).url()}
+//                         alt={`${product.title} ${i + 1}`}
+//                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
+//                       />
+//                     </button>
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+
+//           {/* INFO */}
+//           <div>
+//             {product.category && <div className="pk-eyebrow">{product.category}</div>}
+//             <h1 style={{ fontSize: "clamp(26px, 3vw, 38px)", lineHeight: 1.2 }}>
+//               {product.title}
+//             </h1>
+
+//             {product.rating && (
+//               <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
+//                 <span style={{ color: "var(--gold)", fontSize: 16, letterSpacing: 2 }}>
+//                   {"★".repeat(Math.round(product.rating))}
+//                   {"☆".repeat(5 - Math.round(product.rating))}
+//                 </span>
+//                 <span style={{ fontSize: 13, color: "#6b5d52" }}>
+//                   {product.rating.toFixed ? product.rating.toFixed(1) : product.rating} / 5
+//                 </span>
+//               </div>
+//             )}
+
+//             <p style={{ marginTop: 18, fontSize: 15.5, color: "#4a3d35", lineHeight: 1.8 }}>
+//               {product.description}
+//             </p>
+
+//             {product.price && (
+//               <div style={{ marginTop: 20, fontSize: 26, fontWeight: 600, color: "var(--espresso)" }}>
+//                 {product.price}
+//               </div>
+//             )}
+
+//             <div style={{ marginTop: 26, display: "flex", gap: 14, flexWrap: "wrap" }}>
+//               <a
+//                 href={product.link || "#"}
+//                 target="_blank"
+//                 rel="noopener noreferrer sponsored"
+//                 className="pk-btn pk-btn-gold"
+//                 style={{ fontSize: 15, padding: "16px 36px" }}
+//               >
+//                 View on Amazon →
+//               </a>
+//             </div>
+
+//             {/* TRUST BADGES */}
+//             <div
+//               style={{
+//                 display: "flex",
+//                 gap: 18,
+//                 marginTop: 26,
+//                 flexWrap: "wrap",
+//                 fontSize: 12.5,
+//                 color: "#6b5d52",
+//               }}
+//             >
+//               <span>✓ Hand-picked by Pickify</span>
+//               <span>✓ Fulfilled & shipped by Amazon</span>
+//               <span>✓ Reviewed for quality</span>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* KEY BENEFITS */}
+//       {highlights.length > 0 && (
+//         <section className="pk-section">
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">Key benefits</div>
+//               <h2 className="pk-section-title">Product Highlights</h2>
+//             </Reveal>
+//             <div
+//               style={{
+//                 display: "grid",
+//                 gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+//                 gap: 22,
+//                 marginTop: 32,
+//               }}
+//             >
+//               {highlights.map((h, i) => (
+//                 <Reveal key={i} delay={i * 70}>
+//                   <div
+//                     className="pk-hover-lift"
+//                     style={{
+//                       background: "#fff",
+//                       borderRadius: "var(--radius-md)",
+//                       padding: "24px 20px",
+//                       boxShadow: "var(--shadow-soft)",
+//                       height: "100%",
+//                     }}
+//                   >
+//                     <div style={{ width: 30, height: 2, background: "var(--gold)", marginBottom: 14 }} />
+//                     <p style={{ fontSize: 14.5, color: "#4a3d35", lineHeight: 1.7 }}>{h}</p>
+//                   </div>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* WHY WE LOVE IT + LIFESTYLE */}
+//       <section className="pk-section" style={{ background: "var(--linen)" }}>
+//         <div
+//           className="pk-container"
+//           style={{ display: "grid", gridTemplateColumns: images[1] ? "1fr 1fr" : "1fr", gap: 48, alignItems: "center" }}
+//         >
+//           <Reveal>
+//             <div className="pk-eyebrow">Why we love it</div>
+//             <h2 className="pk-section-title">{product.whyWeLoveItTitle || "An everyday upgrade worth making"}</h2>
+//             <p className="pk-section-sub" style={{ maxWidth: 480 }}>
+//               {product.whyWeLoveIt ||
+//                 "This piece earned its spot on Pickify for doing one thing well: making a daily routine feel less chaotic and more considered, without demanding a full home renovation to get there."}
+//             </p>
+//             {bestFor.length > 0 && (
+//               <div style={{ marginTop: 22 }}>
+//                 <h4 style={{ fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--espresso)", marginBottom: 10 }}>
+//                   Best For
+//                 </h4>
+//                 <ul style={{ paddingLeft: 18, color: "#4a3d35", fontSize: 14, lineHeight: 1.9 }}>
+//                   {bestFor.map((b, i) => (
+//                     <li key={i}>{b}</li>
+//                   ))}
+//                 </ul>
+//               </div>
+//             )}
+//           </Reveal>
+
+//           {images[1] && (
+//             <Reveal delay={100}>
+//               <div className="pk-img-zoom" style={{ borderRadius: "var(--radius-lg)", overflow: "hidden", boxShadow: "var(--shadow-soft)" }}>
+//                 <img
+//                   src={urlFor(images[1]).width(600).height(440).url()}
+//                   alt={`${product.title} in use`}
+//                   style={{ width: "100%", height: 360, objectFit: "cover" }}
+//                 />
+//               </div>
+//             </Reveal>
+//           )}
+//         </div>
+//       </section>
+
+//       {/* PROS */}
+//       {pros.length > 0 && (
+//         <section className="pk-section">
+//           <div className="pk-container" style={{ maxWidth: 700 }}>
+//             <Reveal>
+//               <div className="pk-eyebrow">At a glance</div>
+//               <h2 className="pk-section-title">What Stands Out</h2>
+//             </Reveal>
+//             <div style={{ marginTop: 26 }}>
+//               {pros.map((pro, i) => (
+//                 <Reveal key={i} delay={i * 50}>
+//                   <div
+//                     style={{
+//                       display: "flex",
+//                       alignItems: "flex-start",
+//                       gap: 12,
+//                       padding: "14px 0",
+//                       borderBottom: "1px solid rgba(44,24,16,0.08)",
+//                     }}
+//                   >
+//                     <span style={{ color: "var(--gold)", fontSize: 16 }}>✓</span>
+//                     <span style={{ fontSize: 14.5, color: "#4a3d35" }}>{pro}</span>
+//                   </div>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* MID-PAGE CTA */}
+//       <section className="pk-section" style={{ background: "var(--espresso)", textAlign: "center" }}>
+//         <Reveal>
+//           <h2 className="pk-section-title" style={{ color: "#FAF7F2" }}>
+//             Ready to bring this home?
+//           </h2>
+//           <p style={{ color: "rgba(250,247,242,0.7)", marginTop: 10, marginBottom: 26 }}>
+//             Available now on Amazon with fast, trusted shipping.
+//           </p>
+//           <a
+//             href={product.link || "#"}
+//             target="_blank"
+//             rel="noopener noreferrer sponsored"
+//             className="pk-btn pk-btn-gold"
+//           >
+//             Check Price on Amazon →
+//           </a>
+//         </Reveal>
+//       </section>
+
+//       {/* FAQ */}
+//       <section className="pk-section">
+//         <div className="pk-container" style={{ maxWidth: 700 }}>
+//           <Reveal>
+//             <div className="pk-eyebrow">Common questions</div>
+//             <h2 className="pk-section-title">FAQ</h2>
+//           </Reveal>
+//           <div style={{ marginTop: 26 }}>
+//             <FaqAccordion items={faqItems} />
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* RELATED PRODUCTS */}
+//       {related.length > 0 && (
+//         <section className="pk-section" style={{ background: "var(--linen)" }}>
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">You might also like</div>
+//               <h2 className="pk-section-title">Related Products</h2>
+//             </Reveal>
+//             <div className="pk-grid" style={{ marginTop: 36 }}>
+//               {related.map((p, i) => (
+//                 <Reveal key={p._id} delay={i * 70}>
+//                   <Link href={`/product/${p._id}`} style={{ textDecoration: "none" }}>
+//                     <div className="pk-card pk-hover-lift">
+//                       {p.images && p.images[0] && (
+//                         <img
+//                           src={urlFor(p.images[0]).width(400).height(300).url()}
+//                           alt={p.title}
+//                           className="pk-card-img"
+//                         />
+//                       )}
+//                       <div className="pk-card-body">
+//                         <h3 className="pk-card-title">{p.title}</h3>
+//                       </div>
+//                     </div>
+//                   </Link>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       <Footer />
+
+//       {/* STICKY MOBILE BUY BAR */}
+//       <div className="pk-sticky-buy">
+//         <a
+//           href={product.link || "#"}
+//           target="_blank"
+//           rel="noopener noreferrer sponsored"
+//           className="pk-btn pk-btn-gold"
+//         >
+//           {product.price ? `View on Amazon — ${product.price}` : "View on Amazon"}
+//         </a>
+//       </div>
+
+//       <style>{`
+//         @media (max-width: 768px) {
+//           .pk-product-grid { grid-template-columns: 1fr !important; }
+//         }
+//       `}</style>
+//     </div>
+//   );
+// }
+
+
+
+// "use client";
+
+// // FILE PATH: src/app/product/[id]/page.js
+// // STATUS: REPLACE EXISTING FILE
+
+// import { useEffect, useState } from "react";
+// import { useParams } from "next/navigation";
+// import Link from "next/link";
+// import { getProductById, urlFor } from "../../../sanity";
+import { getAffiliateCta, getAffiliateLabel } from "../../../lib/affiliateUtils";
+// import Navbar from "../../../components/Navbar";
+// import Footer from "../../../components/Footer";
+// import Reveal from "../../../components/Reveal";
+// import FaqAccordion from "../../../components/FaqAccordion";
+
+// /* ─── Static FAQ (no faq field in schema) ─── */
+// const STATIC_FAQ = [
+//   {
+//     q: "Does Pickify ship this product?",
+//     a: "No — Pickify links directly to Amazon, who handles all shipping, payment, and returns.",
+//   },
+//   {
+//     q: "Is this product covered by a warranty?",
+//     a: "Warranty terms are set by the seller on Amazon and visible on the product listing before checkout.",
+//   },
+//   {
+//     q: "Will this fit in my space?",
+//     a: "Check the exact dimensions listed on this page and on the Amazon listing before ordering.",
+//   },
+//   {
+//     q: "How does Pickify choose its products?",
+//     a: "Every product is hand-reviewed for build quality, real customer reviews, and practical value in everyday homes.",
+//   },
+// ];
+
+// /* ─── Badge colour map ─── */
+// const BADGE_COLORS = {
+//   "Best Seller":     { bg: "#C9A96E", color: "#2C1810" },
+//   "Editor's Choice": { bg: "#2C1810", color: "#FAF7F2" },
+//   "Best Value":      { bg: "#4a7c59", color: "#fff"    },
+//   "Budget Pick":     { bg: "#6b8cba", color: "#fff"    },
+//   "Most Popular":    { bg: "#C9A96E", color: "#2C1810" },
+//   "Trending":        { bg: "#c0392b", color: "#fff"    },
+//   "New Arrival":     { bg: "#8e44ad", color: "#fff"    },
+// };
+
+// export default function ProductPage() {
+//   const { id } = useParams();
+
+//   const [product,   setProduct]   = useState(null);
+//   const [activeImg, setActiveImg] = useState(0);
+//   const [loading,   setLoading]   = useState(true);
+//   const [error,     setError]     = useState(null);
+
+//   useEffect(() => {
+//     if (!id) return;
+//     setLoading(true);
+//     setActiveImg(0);
+//     getProductById(id)
+//       .then((p) => {
+//         console.log("[Pickify] product loaded:", p);
+//         setProduct(p || null);
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.error("[Pickify] product fetch failed:", err);
+//         setError(err.message || "Failed to load product.");
+//         setLoading(false);
+//       });
+//   }, [id]);
+
+//   /* ── Loading ── */
+//   if (loading) {
+//     return (
+//       <div className="pk-no-scroll-x">
+//         <Navbar />
+//         <div style={{ paddingTop: 180, textAlign: "center", minHeight: "60vh" }}>
+//           <div className="pk-pdp-spinner" />
+//           <p style={{ marginTop: 20, color: "#6b5d52", fontSize: 14 }}>
+//             Loading product…
+//           </p>
+//         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   /* ── Error / not found ── */
+//   if (error || !product) {
+//     return (
+//       <div className="pk-no-scroll-x">
+//         <Navbar />
+//         <div style={{ paddingTop: 160, textAlign: "center", padding: "160px 20px 80px", minHeight: "60vh" }}>
+//           <h2 className="pk-section-title">Product not found</h2>
+//           <p style={{ color: "#6b5d52", marginTop: 12, fontSize: 14 }}>
+//             {error || "This product may have been removed or is unavailable."}
+//           </p>
+//           <Link
+//             href="/"
+//             className="pk-btn pk-btn-primary"
+//             style={{ marginTop: 28, display: "inline-flex" }}
+//           >
+//             ← Back to Pickify
+//           </Link>
+//         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   /* ─────────────────────────────────────────────────────────────
+//      FIX: Use || [] instead of destructuring defaults (= []).
+//      Destructuring defaults only fire for UNDEFINED.
+//      Sanity returns NULL for empty arrays, which bypasses = []
+//      and causes: Cannot read properties of null (reading 'length')
+//   ───────────────────────────────────────────────────────────── */
+//   const title           = product.title           || "";
+//   const brand           = product.brand           || "";
+//   const category        = product.category        || "";
+//   const shortDescription= product.shortDescription|| "";
+//   const description     = product.description     || "";
+//   const link            = product.link            || "#";
+//   const material        = product.material        || "";
+//   const color           = product.color           || "";
+//   const dimensions      = product.dimensions      || "";
+//   const tiers           = product.tiers           || "";
+//   const badge           = product.badge           || "";
+//   const seoTitle        = product.seoTitle        || title;
+
+//   /* Arrays — null-safe with || [] */
+//   const images          = product.images          || [];
+//   const features        = product.features        || [];
+//   const benefits        = product.benefits        || [];
+//   const pros            = product.pros            || [];
+//   const cons            = product.cons            || [];
+//   const bestFor         = product.bestFor         || [];
+//   const relatedProducts = product.relatedProducts || [];
+
+//   const badgeStyle = badge
+//     ? (BADGE_COLORS[badge] || { bg: "#C9A96E", color: "#2C1810" })
+//     : null;
+
+//   /* Specs — only rows with real data */
+//   const specs = [
+//     { label: "Material",   value: material   },
+//     { label: "Color",      value: color      },
+//     { label: "Dimensions", value: dimensions },
+//     { label: "Tiers",      value: tiers      },
+//     { label: "Brand",      value: brand      },
+//     { label: "Category",   value: category   },
+//   ].filter((s) => Boolean(s.value));
+
+//   const hasSpecs = specs.length > 0;
+
+//   return (
+//     <div className="pk-no-scroll-x" style={{ paddingBottom: 80 }}>
+//       <Navbar />
+
+//       {/* ══════════════════════════════════════════════════
+//           BREADCRUMB
+//       ══════════════════════════════════════════════════ */}
+//       <div
+//         className="pk-container"
+//         style={{ marginTop: 106, paddingTop: 16, fontSize: 13, color: "#8a7a6d" }}
+//       >
+//         <Link href="/" style={{ textDecoration: "none", color: "#8a7a6d" }}>
+//           Pickify
+//         </Link>
+//         {category && (
+//           <>
+//             {" / "}
+//             <span style={{ color: "#8a7a6d" }}>{category}</span>
+//           </>
+//         )}
+//         {" / "}
+//         <span style={{ color: "var(--espresso)", fontWeight: 500 }}>{title}</span>
+//       </div>
+
+//       {/* ══════════════════════════════════════════════════
+//           HERO — GALLERY + INFO
+//       ══════════════════════════════════════════════════ */}
+//       <section className="pk-container pk-pdp-hero">
+
+//         {/* LEFT — IMAGE GALLERY */}
+//         <div className="pk-pdp-gallery">
+//           <div className="pk-pdp-main-img pk-img-zoom">
+//             {images.length > 0 ? (
+//               <img
+//                 src={urlFor(images[activeImg]).width(900).height(700).fit("crop").url()}
+//                 alt={title}
+//               />
+//             ) : (
+//               <div className="pk-pdp-img-placeholder">🛒</div>
+//             )}
+
+//             {badge && badgeStyle && (
+//               <div
+//                 className="pk-pdp-badge"
+//                 style={{ background: badgeStyle.bg, color: badgeStyle.color }}
+//               >
+//                 {badge}
+//               </div>
+//             )}
+//           </div>
+
+//           {images.length > 1 && (
+//             <div className="pk-pdp-thumbs">
+//               {images.map((img, i) => (
+//                 <button
+//                   key={i}
+//                   type="button"
+//                   onClick={() => setActiveImg(i)}
+//                   className={`pk-pdp-thumb${i === activeImg ? " pk-pdp-thumb-active" : ""}`}
+//                   aria-label={`View image ${i + 1}`}
+//                 >
+//                   <img
+//                     src={urlFor(img).width(120).height(120).fit("crop").url()}
+//                     alt={`${title} ${i + 1}`}
+//                   />
+//                 </button>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+
+//         {/* RIGHT — PRODUCT INFO */}
+//         <div className="pk-pdp-info">
+//           {category && <div className="pk-eyebrow">{category}</div>}
+
+//           <h1 className="pk-pdp-title">{title}</h1>
+
+//           {shortDescription && (
+//             <p className="pk-pdp-short-desc">{shortDescription}</p>
+//           )}
+
+//           <a
+//             href={link}
+//             target="_blank"
+//             rel="noopener noreferrer sponsored"
+//             className="pk-btn pk-btn-gold pk-pdp-cta"
+//           >
+//             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+//               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+//               <line x1="3" y1="6" x2="21" y2="6"/>
+//               <path d="M16 10a4 4 0 0 1-8 0"/>
+//             </svg>
+//             View on Amazon
+//           </a>
+
+//           <div className="pk-pdp-trust">
+//             <span>✓ Hand-picked by Pickify</span>
+//             <span>✓ Shipped by Amazon</span>
+//             <span>✓ Quality reviewed</span>
+//           </div>
+
+//           {features.length > 0 && (
+//             <div className="pk-pdp-quick-features">
+//               <p className="pk-pdp-features-label">Key Features</p>
+//               <ul className="pk-pdp-features-list">
+//                 {features.slice(0, 4).map((f, i) => (
+//                   <li key={i}>{f}</li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+
+//           {hasSpecs && (
+//             <div className="pk-pdp-specs-snap">
+//               {specs.slice(0, 3).map((s) => (
+//                 <div key={s.label} className="pk-pdp-spec-pill">
+//                   <span className="pk-pdp-spec-pill-label">{s.label}</span>
+//                   <span className="pk-pdp-spec-pill-val">{s.value}</span>
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//       </section>
+
+//       {/* ══════════════════════════════════════════════════
+//           FULL DESCRIPTION
+//       ══════════════════════════════════════════════════ */}
+//       {description && (
+//         <section className="pk-section" style={{ background: "var(--linen)" }}>
+//           <div className="pk-container" style={{ maxWidth: 860 }}>
+//             <Reveal>
+//               <div className="pk-eyebrow">About this product</div>
+//               <h2 className="pk-section-title">Full Description</h2>
+//               <p
+//                 style={{
+//                   marginTop: 20,
+//                   fontSize: 15.5,
+//                   color: "#4a3d35",
+//                   lineHeight: 1.9,
+//                   whiteSpace: "pre-line",
+//                 }}
+//               >
+//                 {description}
+//               </p>
+//             </Reveal>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           ALL KEY FEATURES
+//       ══════════════════════════════════════════════════ */}
+//       {features.length > 0 && (
+//         <section className="pk-section">
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">What makes it great</div>
+//               <h2 className="pk-section-title">Key Features</h2>
+//             </Reveal>
+//             <div className="pk-pdp-features-grid">
+//               {features.map((f, i) => (
+//                 <Reveal key={i} delay={i * 60}>
+//                   <div className="pk-pdp-feature-card">
+//                     <span className="pk-pdp-feature-num">
+//                       {String(i + 1).padStart(2, "0")}
+//                     </span>
+//                     <p>{f}</p>
+//                   </div>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           BENEFITS
+//       ══════════════════════════════════════════════════ */}
+//       {benefits.length > 0 && (
+//         <section className="pk-section" style={{ background: "var(--espresso)" }}>
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow" style={{ color: "var(--gold)" }}>
+//                 Real-life impact
+//               </div>
+//               <h2 className="pk-section-title" style={{ color: "#FAF7F2" }}>
+//                 Benefits
+//               </h2>
+//             </Reveal>
+//             <div className="pk-pdp-benefits-grid">
+//               {benefits.map((b, i) => (
+//                 <Reveal key={i} delay={i * 65}>
+//                   <div className="pk-pdp-benefit-card">
+//                     <div className="pk-pdp-benefit-icon">✦</div>
+//                     <p>{b}</p>
+//                   </div>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           PROS + CONS
+//       ══════════════════════════════════════════════════ */}
+//       {(pros.length > 0 || cons.length > 0) && (
+//         <section className="pk-section">
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">Honest assessment</div>
+//               <h2 className="pk-section-title">Pros & Cons</h2>
+//             </Reveal>
+//             <div className="pk-pdp-proscons">
+//               {pros.length > 0 && (
+//                 <div className="pk-pdp-pros-col">
+//                   <div className="pk-pdp-proscons-header pk-pdp-proscons-header-pros">
+//                     <span>👍</span> Pros
+//                   </div>
+//                   {pros.map((p, i) => (
+//                     <Reveal key={i} delay={i * 50}>
+//                       <div className="pk-pdp-proscons-row">
+//                         <span className="pk-pdp-check-icon">✓</span>
+//                         <span>{p}</span>
+//                       </div>
+//                     </Reveal>
+//                   ))}
+//                 </div>
+//               )}
+
+//               {cons.length > 0 && (
+//                 <div className="pk-pdp-cons-col">
+//                   <div className="pk-pdp-proscons-header pk-pdp-proscons-header-cons">
+//                     <span>👎</span> Cons
+//                   </div>
+//                   {cons.map((c, i) => (
+//                     <Reveal key={i} delay={i * 50}>
+//                       <div className="pk-pdp-proscons-row">
+//                         <span className="pk-pdp-cross-icon">✗</span>
+//                         <span>{c}</span>
+//                       </div>
+//                     </Reveal>
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           BEST FOR
+//       ══════════════════════════════════════════════════ */}
+//       {bestFor.length > 0 && (
+//         <section className="pk-section" style={{ background: "var(--linen)" }}>
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">Ideal use cases</div>
+//               <h2 className="pk-section-title">Best For</h2>
+//             </Reveal>
+//             <div className="pk-pdp-bestfor-grid">
+//               {bestFor.map((b, i) => (
+//                 <Reveal key={i} delay={i * 55}>
+//                   <div className="pk-pdp-bestfor-card">
+//                     <div className="pk-pdp-bestfor-dot" />
+//                     <span>{b}</span>
+//                   </div>
+//                 </Reveal>
+//               ))}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           SPECIFICATIONS TABLE
+//       ══════════════════════════════════════════════════ */}
+//       {hasSpecs && (
+//         <section className="pk-section">
+//           <div className="pk-container" style={{ maxWidth: 720 }}>
+//             <Reveal>
+//               <div className="pk-eyebrow">Product details</div>
+//               <h2 className="pk-section-title">Specifications</h2>
+//             </Reveal>
+//             <Reveal delay={80}>
+//               <table className="pk-pdp-specs-table">
+//                 <tbody>
+//                   {specs.map((s) => (
+//                     <tr key={s.label}>
+//                       <th>{s.label}</th>
+//                       <td>{s.value}</td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </Reveal>
+//           </div>
+//         </section>
+//       )}
+
+//       {/* ══════════════════════════════════════════════════
+//           MID-PAGE CTA BANNER
+//       ══════════════════════════════════════════════════ */}
+//       <section className="pk-pdp-cta-banner">
+//         <Reveal>
+//           <p className="pk-pdp-cta-banner-sub">Available now on Amazon</p>
+//           <h2 className="pk-pdp-cta-banner-title">Ready to bring this home?</h2>
+//           <a
+//             href={link}
+//             target="_blank"
+//             rel="noopener noreferrer sponsored"
+//             className="pk-btn pk-btn-gold"
+//             style={{ fontSize: 15, padding: "16px 42px" }}
+//           >
+//             Check Price on Amazon →
+//           </a>
+//           <p className="pk-pdp-cta-banner-disclosure">
+//             As an Amazon Associate, Pickify earns from qualifying purchases.
+//           </p>
+//         </Reveal>
+//       </section>
+
+//       {/* ══════════════════════════════════════════════════
+//           FAQ
+//       ══════════════════════════════════════════════════ */}
+//       <section className="pk-section">
+//         <div className="pk-container" style={{ maxWidth: 720 }}>
+//           <Reveal>
+//             <div className="pk-eyebrow">Common questions</div>
+//             <h2 className="pk-section-title">FAQ</h2>
+//           </Reveal>
+//           <div style={{ marginTop: 28 }}>
+//             <FaqAccordion items={STATIC_FAQ} />
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* ══════════════════════════════════════════════════
+//           RELATED PRODUCTS
+//       ══════════════════════════════════════════════════ */}
+//       {relatedProducts.length > 0 && (
+//         <section className="pk-section" style={{ background: "var(--linen)" }}>
+//           <div className="pk-container">
+//             <Reveal>
+//               <div className="pk-eyebrow">You might also like</div>
+//               <h2 className="pk-section-title">Related Products</h2>
+//             </Reveal>
+//             <div className="pk-grid" style={{ marginTop: 36 }}>
+//               {relatedProducts.map((p, i) => {
+//                 const rImages = p.images || [];
+//                 return (
+//                   <Reveal key={p._id} delay={i * 70}>
+//                     <Link href={`/product/${p._id}`} style={{ textDecoration: "none" }}>
+//                       <div className="pk-card pk-hover-lift pk-glow">
+//                         {rImages.length > 0 ? (
+//                           <div className="pk-img-zoom" style={{ borderRadius: 15 }}>
+//                             <img
+//                               src={urlFor(rImages[0]).width(400).height(300).fit("crop").url()}
+//                               alt={p.title}
+//                               className="pk-card-img"
+//                             />
+//                           </div>
+//                         ) : (
+//                           <div
+//                             style={{
+//                               height: 220,
+//                               borderRadius: 15,
+//                               background: "var(--ivory)",
+//                               display: "flex",
+//                               alignItems: "center",
+//                               justifyContent: "center",
+//                               fontSize: 36,
+//                             }}
+//                           >
+//                             🛒
+//                           </div>
+//                         )}
+//                         <div className="pk-card-body">
+//                           {p.badge && (
+//                             <span
+//                               style={{
+//                                 fontSize: 11,
+//                                 fontWeight: 700,
+//                                 letterSpacing: "0.06em",
+//                                 textTransform: "uppercase",
+//                                 color: "var(--gold)",
+//                               }}
+//                             >
+//                               {p.badge}
+//                             </span>
+//                           )}
+//                           <h3
+//                             className="pk-card-title"
+//                             style={{ marginTop: p.badge ? 6 : 0 }}
+//                           >
+//                             {p.title}
+//                           </h3>
+//                           {p.shortDescription && (
+//                             <p className="pk-card-desc">{p.shortDescription}</p>
+//                           )}
+//                           <div style={{ marginTop: 14 }}>
+//                             <span style={{ fontSize: 13, fontWeight: 600, color: "var(--gold)" }}>
+//                               View on Amazon →
+//                             </span>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </Link>
+//                   </Reveal>
+//                 );
+//               })}
+//             </div>
+//           </div>
+//         </section>
+//       )}
+
+//       <Footer />
+
+//       {/* ══════════════════════════════════════════════════
+//           STICKY MOBILE BUY BAR
+//       ══════════════════════════════════════════════════ */}
+//       <div className="pk-sticky-buy">
+//         <a
+//           href={link}
+//           target="_blank"
+//           rel="noopener noreferrer sponsored"
+//           className="pk-btn pk-btn-gold"
+//         >
+//           View on Amazon →
+//         </a>
+//       </div>
+//     </div>
+//   );
+// }
 
 
 "use client";
 
-// PATH: my-website/src/app/buying-guides/[slug]/page.js
-// NEW FILE — individual buying guide page
+// FILE PATH: src/app/product/[id]/page.js
+// STATUS: REPLACE EXISTING FILE — luxury UI redesign, logic unchanged
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { PortableText } from "@portabletext/react";
-import { getBuyingGuideBySlug, urlFor } from "../../../sanity";
-import { getAffiliateCta } from "../../../lib/affiliateUtils";
+import { getProductById, urlFor } from "../../../sanity";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Reveal from "../../../components/Reveal";
 import FaqAccordion from "../../../components/FaqAccordion";
 
-/* ── PortableText renderers matching the blog page style ── */
-const portableComponents = {
-  block: {
-    h2: ({ children }) => (
-      <h2 style={{ fontSize: 26, marginTop: 36, marginBottom: 14, fontFamily: "var(--font-heading), serif", color: "var(--espresso)" }}>
-        {children}
-      </h2>
-    ),
-    h3: ({ children }) => (
-      <h3 style={{ fontSize: 21, marginTop: 28, marginBottom: 10, fontFamily: "var(--font-heading), serif", color: "var(--espresso)" }}>
-        {children}
-      </h3>
-    ),
-    normal: ({ children }) => (
-      <p style={{ fontSize: 16, lineHeight: 1.9, color: "#4a3d35", marginBottom: 18 }}>
-        {children}
-      </p>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote style={{ borderLeft: "3px solid var(--gold)", paddingLeft: 20, margin: "28px 0", fontStyle: "italic", color: "var(--espresso)", fontSize: 17 }}>
-        {children}
-      </blockquote>
-    ),
-  },
-  types: {
-    image: ({ value }) => (
-      <img
-        src={urlFor(value).width(900).url()}
-        alt={value.alt || ""}
-        style={{ width: "100%", borderRadius: "var(--radius-md)", margin: "28px 0" }}
-      />
-    ),
-  },
+/* ─── Static FAQ ─── */
+const STATIC_FAQ = [
+  { q: "Does Pickify ship this product?",       a: "No — Pickify links directly to Amazon, who handles all shipping, payment, and returns." },
+  { q: "Is this product covered by a warranty?",a: "Warranty terms are set by the seller on Amazon and visible on the product listing before checkout." },
+  { q: "Will this fit in my space?",             a: "Check the exact dimensions listed on this page and on the Amazon listing before ordering." },
+  { q: "How does Pickify choose its products?",  a: "Every product is hand-reviewed for build quality, real customer reviews, and practical value in everyday homes." },
+];
+
+/* ─── Badge colour map ─── */
+const BADGE_COLORS = {
+  "Best Seller":     { bg: "#C9A96E", color: "#2C1810" },
+  "Editor's Choice": { bg: "#2C1810", color: "#FAF7F2" },
+  "Best Value":      { bg: "#4a7c59", color: "#fff"    },
+  "Budget Pick":     { bg: "#6b8cba", color: "#fff"    },
+  "Most Popular":    { bg: "#C9A96E", color: "#2C1810" },
+  "Trending":        { bg: "#c0392b", color: "#fff"    },
+  "New Arrival":     { bg: "#8e44ad", color: "#fff"    },
 };
 
-/* affiliateCTA replaced by shared getAffiliateCta from lib/affiliateUtils.js */
+/* ─── Decorative components ─── */
+function GoldDivider() {
+  return (
+    <div className="pk-lux-divider" aria-hidden="true">
+      <span className="pk-lux-divider-line" />
+      <span className="pk-lux-divider-diamond">◆</span>
+      <span className="pk-lux-divider-line" />
+    </div>
+  );
+}
 
-export default function BuyingGuidePage() {
-  const { slug } = useParams();
-  const [guide,   setGuide]   = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState(null);
+function BotanicalBranch({ className = "" }) {
+  return (
+    <svg viewBox="0 0 160 380" fill="none" xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true" className={`pk-lux-botanical ${className}`}>
+      <path d="M80 375 C78 335 75 285 80 240 C85 195 83 160 80 120 C77 80 80 48 82 14"
+        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+      <path d="M80 295 Q56 278 36 283" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 255 Q53 238 33 242" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 210 Q57 194 38 197" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 168 Q57 152 39 155" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 275 Q104 256 124 260" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 232 Q107 214 128 218" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 188 Q102 170 122 173" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <path d="M80 145 Q103 127 122 130" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+      <ellipse cx="30" cy="282" rx="12" ry="5" transform="rotate(-22 30 282)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="26" cy="241" rx="11" ry="5" transform="rotate(-26 26 241)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="31" cy="196" rx="12" ry="5" transform="rotate(-20 31 196)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="32" cy="154" rx="11" ry="4" transform="rotate(-24 32 154)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="130" cy="258" rx="12" ry="5" transform="rotate(20 130 258)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="135" cy="216" rx="11" ry="5" transform="rotate(24 135 216)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="129" cy="171" rx="12" ry="5" transform="rotate(22 129 171)" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="128" cy="128" rx="11" ry="4" transform="rotate(20 128 128)" fill="currentColor" opacity="0.5"/>
+    </svg>
+  );
+}
+
+/* ─────────────────────────────────────────────────
+   MAIN COMPONENT — all fetch/state logic unchanged
+───────────────────────────────────────────────── */
+export default function ProductPage() {
+  const { id } = useParams();
+
+  const [product,   setProduct]   = useState(null);
+  const [activeImg, setActiveImg] = useState(0);
+  const [loading,   setLoading]   = useState(true);
+  const [error,     setError]     = useState(null);
 
   useEffect(() => {
-    if (!slug) return;
-    getBuyingGuideBySlug(slug)
-      .then((g) => {
-        setGuide(g || null);
+    if (!id) return;
+    setLoading(true);
+    setActiveImg(0);
+    getProductById(id)
+      .then((p) => {
+        console.log("[Pickify] product loaded:", p);
+        setProduct(p || null);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("[Pickify] buying guide fetch failed:", err);
-        setError(err.message);
+        console.error("[Pickify] product fetch failed:", err);
+        setError(err.message || "Failed to load product.");
         setLoading(false);
       });
-  }, [slug]);
+  }, [id]);
 
   /* Loading */
   if (loading) {
     return (
       <div className="pk-no-scroll-x">
         <Navbar />
-        <div style={{ paddingTop: 160, textAlign: "center", minHeight: "60vh" }}>
-          <p style={{ color: "#6b5d52" }}>Loading guide…</p>
+        <div className="pk-lux-loading">
+          <div className="pk-pdp-spinner" />
+          <p>Curating your product…</p>
         </div>
         <Footer />
       </div>
     );
   }
 
-  /* Not found / error */
-  if (error || !guide) {
+  /* Error / not found */
+  if (error || !product) {
     return (
       <div className="pk-no-scroll-x">
         <Navbar />
-        <div style={{ paddingTop: 160, textAlign: "center", padding: "160px 20px 80px" }}>
-          <h2 className="pk-section-title">Guide not found</h2>
-          <p style={{ color: "#6b5d52", marginTop: 12 }}>
-            {error || "This buying guide may not exist yet."}
+        <div className="pk-lux-loading">
+          <h2 className="pk-section-title">Product not found</h2>
+          <p style={{ color: "#6b5d52", marginTop: 12, fontSize: 14 }}>
+            {error || "This product may have been removed or is unavailable."}
           </p>
-          <Link href="/buying-guides" className="pk-btn pk-btn-primary" style={{ marginTop: 24, display: "inline-flex" }}>
-            ← All Buying Guides
+          <Link href="/" className="pk-btn pk-btn-primary" style={{ marginTop: 28, display: "inline-flex" }}>
+            ← Back to Pickify
           </Link>
         </div>
         <Footer />
@@ -106,130 +1129,219 @@ export default function BuyingGuidePage() {
     );
   }
 
-  const recommendedProducts = guide.recommendedProducts || [];
-  const faqs                = guide.faqs               || [];
-  const relatedArticles     = guide.relatedArticles    || [];
-  const relatedGuides       = guide.relatedGuides      || [];
-  const buyingCriteria      = guide.buyingCriteria     || [];
-  const specificationsToConsider = guide.specificationsToConsider || [];
-  const commonMistakes      = guide.commonMistakes     || [];
+  /* ── Null-safe field extraction ── */
+  const title            = product.title            || "";
+  const brand            = product.brand            || "";
+  const category         = product.category         || "";
+  const shortDescription = product.shortDescription || "";
+  const description      = product.description      || "";
+  const link             = product.link             || "#";
+  const affilCta         = getAffiliateCta(product);  // {label, href, source}
+  const material         = product.material         || "";
+  const color            = product.color            || "";
+  const dimensions       = product.dimensions       || "";
+  const tiers            = product.tiers            || "";
+  const badge            = product.badge            || "";
 
+  const images          = product.images          || [];
+  const features        = product.features        || [];
+  const benefits        = product.benefits        || [];
+  const pros            = product.pros            || [];
+  const cons            = product.cons            || [];
+  const bestFor         = product.bestFor         || [];
+  const relatedProducts = product.relatedProducts || [];
+
+  const badgeStyle = badge ? (BADGE_COLORS[badge] || { bg: "#C9A96E", color: "#2C1810" }) : null;
+
+  const specs = [
+    { label: "Material",   value: material   },
+    { label: "Color",      value: color      },
+    { label: "Dimensions", value: dimensions },
+    { label: "Tiers",      value: tiers      },
+    { label: "Brand",      value: brand      },
+    { label: "Category",   value: category   },
+  ].filter((s) => Boolean(s.value));
+
+  const hasSpecs = specs.length > 0;
+
+  /* ─────────── RENDER ─────────── */
   return (
-    <div className="pk-no-scroll-x">
+    <div className="pk-no-scroll-x pk-lux-page">
       <Navbar />
 
-      {/* ── HERO ── */}
-      {guide.heroImage ? (
-        <div style={{ marginTop: 86, height: 420, overflow: "hidden", position: "relative" }}>
-          <img
-            src={urlFor(guide.heroImage).width(1600).height(700).url()}
-            alt={guide.heroImage?.alt || guide.title}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(180deg, rgba(44,24,16,0.1), rgba(44,24,16,0.55))",
-            }}
-          />
-          <div style={{ position: "absolute", bottom: 36, left: "8%", right: "8%", maxWidth: 820 }}>
-            {guide.category && (
-              <span style={{ fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--gold)", fontWeight: 600 }}>
-                {guide.category}
-              </span>
-            )}
-            <h1 style={{ color: "#FAF7F2", fontSize: "clamp(28px, 4vw, 44px)", marginTop: 10, fontFamily: "var(--font-heading), serif" }}>
-              {guide.title}
-            </h1>
-          </div>
-        </div>
-      ) : (
-        /* No hero image — show text-only header */
-        <section className="pk-section" style={{ marginTop: 70, textAlign: "center", background: "var(--linen)" }}>
-          <div className="pk-container">
-            {guide.category && (
-              <div className="pk-eyebrow" style={{ justifyContent: "center", display: "flex" }}>
-                {guide.category}
-              </div>
-            )}
-            <h1 className="pk-section-title" style={{ fontSize: "clamp(28px, 4vw, 44px)" }}>
-              {guide.title}
-            </h1>
-          </div>
-        </section>
-      )}
-
-      {/* ── BREADCRUMB ── */}
-      <div
-        className="pk-container"
-        style={{ marginTop: guide.heroImage ? 36 : 20, fontSize: 13, color: "#8a7a6d", paddingBottom: 8 }}
-      >
-        <Link href="/"              style={{ textDecoration: "none", color: "#8a7a6d" }}>Home</Link>
-        {" / "}
-        <Link href="/buying-guides" style={{ textDecoration: "none", color: "#8a7a6d" }}>Buying Guides</Link>
-        {" / "}
-        <span style={{ color: "var(--espresso)", fontWeight: 500 }}>{guide.title}</span>
+      {/* ─────────────────────────────────────────────
+          BREADCRUMB
+      ───────────────────────────────────────────── */}
+      <div className="pk-container pk-lux-breadcrumb">
+        <Link href="/">Home</Link>
+        {category && <><span className="pk-lux-bc-sep">·</span><span>{category}</span></>}
+        <span className="pk-lux-bc-sep">·</span>
+        <span className="pk-lux-bc-current">{title}</span>
       </div>
 
-      {/* ── INTRODUCTION ── */}
-      {(guide.shortDescription || guide.introduction) && (
-        <section className="pk-section" style={{ background: "var(--ivory)" }}>
-          <div className="pk-container" style={{ maxWidth: 820 }}>
+      {/* ─────────────────────────────────────────────
+          HERO — GALLERY + PRODUCT INFO
+          bg: white
+      ───────────────────────────────────────────── */}
+      <section className="pk-lux-hero">
+        <div className="pk-container pk-lux-hero-inner">
+
+          {/* LEFT: GALLERY */}
+          <div className="pk-lux-gallery">
+            <div className="pk-lux-main-img-wrap">
+              {images.length > 0 ? (
+                <img
+                  key={activeImg}
+                  src={urlFor(images[activeImg]).width(960).height(960).fit("crop").url()}
+                  alt={title}
+                  className="pk-lux-main-img"
+                />
+              ) : (
+                <div className="pk-lux-img-empty">
+                  <span>🛒</span>
+                  <p>No image available</p>
+                </div>
+              )}
+
+              {badge && badgeStyle && (
+                <span className="pk-lux-badge" style={{ background: badgeStyle.bg, color: badgeStyle.color }}>
+                  {badge}
+                </span>
+              )}
+            </div>
+
+            {images.length > 1 && (
+              <div className="pk-lux-thumbs">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActiveImg(i)}
+                    className={`pk-lux-thumb${i === activeImg ? " pk-lux-thumb-active" : ""}`}
+                    aria-label={`View image ${i + 1}`}
+                  >
+                    <img
+                      src={urlFor(img).width(140).height(140).fit("crop").url()}
+                      alt={`${title} view ${i + 1}`}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: INFO */}
+          <div className="pk-lux-info">
+            {category && (
+              <span className="pk-lux-category-tag">{category}</span>
+            )}
+
+            <h1 className="pk-lux-title">{title}</h1>
+
+            {brand && (
+              <p className="pk-lux-brand">by {brand}</p>
+            )}
+
+            <GoldDivider />
+
+            {shortDescription && (
+              <p className="pk-lux-short-desc">{shortDescription}</p>
+            )}
+
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="pk-lux-cta"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+              {affilCta.label}
+            </a>
+
+            <div className="pk-lux-trust">
+              <div className="pk-lux-trust-item">
+                <span className="pk-lux-trust-icon">✦</span>
+                <span>Hand-picked by Pickify</span>
+              </div>
+              <div className="pk-lux-trust-item">
+                <span className="pk-lux-trust-icon">✦</span>
+                <span>Fulfilled by {affilCta.source}</span>
+              </div>
+              <div className="pk-lux-trust-item">
+                <span className="pk-lux-trust-icon">✦</span>
+                <span>Quality reviewed</span>
+              </div>
+            </div>
+
+            {features.length > 0 && (
+              <div className="pk-lux-quick-features">
+                <p className="pk-lux-features-label">Highlights</p>
+                <ul className="pk-lux-features-ul">
+                  {features.slice(0, 4).map((f, i) => (
+                    <li key={i}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {hasSpecs && (
+              <div className="pk-lux-spec-pills">
+                {specs.slice(0, 3).map((s) => (
+                  <div key={s.label} className="pk-lux-spec-pill">
+                    <span className="pk-lux-spec-pill-key">{s.label}</span>
+                    <span className="pk-lux-spec-pill-val">{s.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────
+          FULL DESCRIPTION
+          bg: warm linen
+      ───────────────────────────────────────────── */}
+      {description && (
+        <section className="pk-lux-section pk-lux-bg-linen pk-lux-section-botanical">
+          <BotanicalBranch className="pk-lux-bot-left" />
+          <BotanicalBranch className="pk-lux-bot-right" />
+          <div className="pk-container pk-lux-section-inner" style={{ maxWidth: 820 }}>
             <Reveal>
-              {guide.shortDescription && !guide.introduction && (
-                <p style={{ fontSize: 16.5, color: "#4a3d35", lineHeight: 1.9, marginBottom: 0 }}>
-                  {guide.shortDescription}
-                </p>
-              )}
-              {guide.introduction && (
-                <PortableText value={guide.introduction} components={portableComponents} />
-              )}
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">About this product</span>
+                <h2 className="pk-lux-heading">The Full Story</h2>
+                <GoldDivider />
+              </div>
+              <p className="pk-lux-description-body">{description}</p>
             </Reveal>
           </div>
         </section>
       )}
 
-      {/* ── WHAT TO LOOK FOR (Buying Criteria) ── */}
-      {buyingCriteria.length > 0 && (
-        <section className="pk-section">
+      {/* ─────────────────────────────────────────────
+          KEY FEATURES
+          bg: white
+      ───────────────────────────────────────────── */}
+      {features.length > 0 && (
+        <section className="pk-lux-section pk-lux-bg-white">
           <div className="pk-container">
             <Reveal>
-              <div className="pk-eyebrow">Make the right choice</div>
-              <h2 className="pk-section-title">What to Look For</h2>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">What makes it exceptional</span>
+                <h2 className="pk-lux-heading">Key Features</h2>
+                <GoldDivider />
+              </div>
             </Reveal>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                gap: 22,
-                marginTop: 36,
-              }}
-            >
-              {buyingCriteria.map((criterion, i) => (
-                <Reveal key={i} delay={i * 60}>
-                  <div
-                    className="pk-hover-lift"
-                    style={{
-                      background: "#fff",
-                      borderRadius: "var(--radius-md)",
-                      padding: "24px 22px",
-                      boxShadow: "var(--shadow-soft)",
-                      height: "100%",
-                      borderTop: "3px solid var(--gold)",
-                    }}
-                  >
-                    {criterion.heading && (
-                      <h3 style={{ fontSize: 17, marginBottom: 10, color: "var(--espresso)" }}>
-                        {criterion.heading}
-                      </h3>
-                    )}
-                    {criterion.description && (
-                      <p style={{ fontSize: 14, color: "#6b5d52", lineHeight: 1.7 }}>
-                        {criterion.description}
-                      </p>
-                    )}
+            <div className="pk-lux-features-grid">
+              {features.map((f, i) => (
+                <Reveal key={i} delay={i * 55}>
+                  <div className="pk-lux-feature-card">
+                    <span className="pk-lux-feature-num">{String(i + 1).padStart(2, "0")}</span>
+                    <p className="pk-lux-feature-text">{f}</p>
                   </div>
                 </Reveal>
               ))}
@@ -238,165 +1350,247 @@ export default function BuyingGuidePage() {
         </section>
       )}
 
-      {/* ── SPECIFICATIONS ── */}
-      {specificationsToConsider.length > 0 && (
-        <section className="pk-section" style={{ background: "var(--linen)" }}>
-          <div className="pk-container" style={{ maxWidth: 720 }}>
+      {/* ─────────────────────────────────────────────
+          BENEFITS
+          bg: ivory
+      ───────────────────────────────────────────── */}
+      {benefits.length > 0 && (
+        <section className="pk-lux-section pk-lux-bg-ivory">
+          <div className="pk-container">
             <Reveal>
-              <div className="pk-eyebrow">Key details</div>
-              <h2 className="pk-section-title">Specifications to Consider</h2>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">Why you'll love it</span>
+                <h2 className="pk-lux-heading">Benefits</h2>
+                <GoldDivider />
+              </div>
             </Reveal>
-            <ul style={{ marginTop: 28, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
-              {specificationsToConsider.map((spec, i) => (
-                <Reveal key={i} delay={i * 40}>
-                  <li
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 12,
-                      padding: "14px 18px",
-                      background: "#fff",
-                      borderRadius: "var(--radius-sm)",
-                      boxShadow: "var(--shadow-soft)",
-                      fontSize: 14.5,
-                      color: "#4a3d35",
-                    }}
-                  >
-                    <span style={{ color: "var(--gold)", fontWeight: 700, flexShrink: 0 }}>→</span>
-                    {spec}
-                  </li>
+            <div className="pk-lux-benefits-grid">
+              {benefits.map((b, i) => (
+                <Reveal key={i} delay={i * 60}>
+                  <div className="pk-lux-benefit-card">
+                    <div className="pk-lux-benefit-icon">✦</div>
+                    <p className="pk-lux-benefit-text">{b}</p>
+                  </div>
                 </Reveal>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       )}
 
-      {/* ── RECOMMENDED PRODUCTS ── */}
-      {recommendedProducts.length > 0 && (
-        <section className="pk-section">
+      {/* ─────────────────────────────────────────────
+          PROS & CONS
+          bg: white
+      ───────────────────────────────────────────── */}
+      {(pros.length > 0 || cons.length > 0) && (
+        <section className="pk-lux-section pk-lux-bg-white">
           <div className="pk-container">
             <Reveal>
-              <div className="pk-eyebrow">Our top picks</div>
-              <h2 className="pk-section-title">Recommended Products</h2>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">Honest editorial review</span>
+                <h2 className="pk-lux-heading">Pros &amp; Cons</h2>
+                <GoldDivider />
+              </div>
             </Reveal>
+            <div className="pk-lux-proscons-grid">
+              {pros.length > 0 && (
+                <Reveal delay={0}>
+                  <div className="pk-lux-pros-card">
+                    <div className="pk-lux-proscons-header">
+                      <span className="pk-lux-proscons-label pk-lux-pros-label">Pros</span>
+                    </div>
+                    <ul className="pk-lux-proscons-list">
+                      {pros.map((p, i) => (
+                        <li key={i} className="pk-lux-pro-item">
+                          <span className="pk-lux-pro-icon">✓</span>
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              )}
+              {cons.length > 0 && (
+                <Reveal delay={80}>
+                  <div className="pk-lux-cons-card">
+                    <div className="pk-lux-proscons-header">
+                      <span className="pk-lux-proscons-label pk-lux-cons-label">Cons</span>
+                    </div>
+                    <ul className="pk-lux-proscons-list">
+                      {cons.map((c, i) => (
+                        <li key={i} className="pk-lux-con-item">
+                          <span className="pk-lux-con-icon">○</span>
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 28, marginTop: 40 }}>
-              {recommendedProducts.map((rec, i) => {
-                const p = rec.product;
-                if (!p) return null;
-                const images = p.images || [];
-                const cta    = getAffiliateCta(p);   // {label, href, source} — from affiliateUtils
+      {/* ─────────────────────────────────────────────
+          BEST FOR
+          bg: linen
+      ───────────────────────────────────────────── */}
+      {bestFor.length > 0 && (
+        <section className="pk-lux-section pk-lux-bg-linen">
+          <div className="pk-container">
+            <Reveal>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">Ideal for</span>
+                <h2 className="pk-lux-heading">Best For</h2>
+                <GoldDivider />
+              </div>
+            </Reveal>
+            <div className="pk-lux-bestfor-grid">
+              {bestFor.map((b, i) => (
+                <Reveal key={i} delay={i * 50}>
+                  <div className="pk-lux-bestfor-card">
+                    <span className="pk-lux-bestfor-icon">◈</span>
+                    <span className="pk-lux-bestfor-text">{b}</span>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
+      {/* ─────────────────────────────────────────────
+          SPECIFICATIONS
+          bg: white
+      ───────────────────────────────────────────── */}
+      {hasSpecs && (
+        <section className="pk-lux-section pk-lux-bg-white">
+          <div className="pk-container" style={{ maxWidth: 740 }}>
+            <Reveal>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">Product details</span>
+                <h2 className="pk-lux-heading">Specifications</h2>
+                <GoldDivider />
+              </div>
+            </Reveal>
+            <Reveal delay={60}>
+              <div className="pk-lux-specs-card">
+                {specs.map((s, i) => (
+                  <div key={s.label} className={`pk-lux-spec-row${i % 2 === 1 ? " pk-lux-spec-row-alt" : ""}`}>
+                    <span className="pk-lux-spec-label">{s.label}</span>
+                    <span className="pk-lux-spec-value">{s.value}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* ─────────────────────────────────────────────
+          MID-PAGE CTA
+          bg: espresso
+      ───────────────────────────────────────────── */}
+      <section className="pk-lux-cta-banner">
+        <BotanicalBranch className="pk-lux-bot-cta-left" />
+        <BotanicalBranch className="pk-lux-bot-cta-right" />
+        <Reveal>
+          <div className="pk-lux-cta-inner">
+            <span className="pk-lux-cta-eyebrow">Available on {affilCta.source}</span>
+            <h2 className="pk-lux-cta-heading">Ready to Elevate Your Space?</h2>
+            <p className="pk-lux-cta-sub">
+              Curated for quality, designed for real homes.
+            </p>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="pk-lux-cta-btn"
+            >
+              {affilCta.label}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <p className="pk-lux-cta-disclosure">
+{affilCta.source === "Amazon" && "As an Amazon Associate, Pickify earns from qualifying purchases."}
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ─────────────────────────────────────────────
+          FAQ
+          bg: ivory
+      ───────────────────────────────────────────── */}
+      <section className="pk-lux-section pk-lux-bg-ivory">
+        <div className="pk-container" style={{ maxWidth: 740 }}>
+          <Reveal>
+            <div className="pk-lux-section-header">
+              <span className="pk-lux-eyebrow">Have questions?</span>
+              <h2 className="pk-lux-heading">Frequently Asked</h2>
+              <GoldDivider />
+            </div>
+          </Reveal>
+          <div style={{ marginTop: 36 }}>
+            <FaqAccordion items={STATIC_FAQ} />
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────
+          RELATED PRODUCTS
+          bg: linen
+      ───────────────────────────────────────────── */}
+      {relatedProducts.length > 0 && (
+        <section className="pk-lux-section pk-lux-bg-linen">
+          <div className="pk-container">
+            <Reveal>
+              <div className="pk-lux-section-header">
+                <span className="pk-lux-eyebrow">Complete your space</span>
+                <h2 className="pk-lux-heading">You May Also Love</h2>
+                <GoldDivider />
+              </div>
+            </Reveal>
+            <div className="pk-lux-related-grid">
+              {relatedProducts.map((p, i) => {
+                const rImages = p.images || [];
                 return (
-                  <Reveal key={p._id || i} delay={i * 60}>
-                    <div
-                      style={{
-                        background: "#fff",
-                        borderRadius: "var(--radius-lg)",
-                        boxShadow: "var(--shadow-soft)",
-                        overflow: "hidden",
-                        display: "grid",
-                        gridTemplateColumns: "280px 1fr",
-                        gap: 0,
-                        border: "1px solid rgba(44,24,16,0.06)",
-                      }}
-                      className="pk-bg-card"
-                    >
-                      {/* IMAGE */}
-                      <div style={{ position: "relative", minHeight: 220, background: "var(--linen)" }}>
-                        {images.length > 0 ? (
-                          <img
-                            src={urlFor(images[0]).width(400).height(320).fit("crop").url()}
-                            alt={p.title}
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
-                        ) : (
-                          <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
-                            🛒
-                          </div>
-                        )}
-
-                        {/* Label badge */}
-                        {rec.label && (
-                          <span
-                            style={{
-                              position: "absolute",
-                              top: 14,
-                              left: 14,
-                              background: "var(--gold)",
-                              color: "var(--espresso)",
-                              fontSize: 11,
-                              fontWeight: 700,
-                              letterSpacing: "0.07em",
-                              textTransform: "uppercase",
-                              padding: "5px 13px",
-                              borderRadius: 999,
-                              boxShadow: "0 3px 10px rgba(0,0,0,0.15)",
-                            }}
-                          >
-                            {rec.label}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* CONTENT */}
-                      <div style={{ padding: "28px 28px 28px 28px" }}>
-                        {p.category && (
-                          <span style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--gold)", fontWeight: 600 }}>
-                            {p.category}
-                          </span>
-                        )}
-                        <h3 style={{ fontSize: "clamp(18px, 2vw, 22px)", fontFamily: "var(--font-heading), serif", marginTop: 6, marginBottom: 10, color: "var(--espresso)" }}>
-                          {p.title}
-                        </h3>
-
-                        {/* Editorial note from guide editor */}
-                        {rec.whyWeRecommendIt && (
-                          <p style={{ fontSize: 14, color: "#4a3d35", lineHeight: 1.7, marginBottom: 14, fontStyle: "italic", borderLeft: "2px solid var(--gold)", paddingLeft: 12 }}>
-                            {rec.whyWeRecommendIt}
-                          </p>
-                        )}
-
-                        {p.shortDescription && !rec.whyWeRecommendIt && (
-                          <p style={{ fontSize: 14, color: "#4a3d35", lineHeight: 1.7, marginBottom: 14 }}>
-                            {p.shortDescription}
-                          </p>
-                        )}
-
-                        {/* Key features — up to 3 */}
-                        {(p.features || []).length > 0 && (
-                          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 18px", display: "flex", flexDirection: "column", gap: 6 }}>
-                            {p.features.slice(0, 3).map((f, fi) => (
-                              <li key={fi} style={{ fontSize: 13.5, color: "#6b5d52", paddingLeft: 18, position: "relative" }}>
-                                <span style={{ position: "absolute", left: 0, color: "var(--gold)" }}>✓</span>
-                                {f}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-
-                        {/* CTA buttons — internal product page FIRST, then affiliate */}
-                        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 8 }}>
-                          <Link
-                            href={`/product/${p._id}`}
-                            className="pk-btn pk-btn-primary"
-                            style={{ fontSize: 13, padding: "11px 22px" }}
-                          >
-                            View Full Details
-                          </Link>
-                          <a
-                            href={p.link || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer sponsored"
-                            className="pk-btn pk-btn-outline"
-                            style={{ fontSize: 13, padding: "11px 22px" }}
-                          >
-                            {cta.label}
-                          </a>
+                  <Reveal key={p._id} delay={i * 70}>
+                    <Link href={`/product/${p._id}`} style={{ textDecoration: "none" }}>
+                      <div className="pk-lux-related-card pk-hover-lift">
+                        <div className="pk-lux-related-img-wrap">
+                          {rImages.length > 0 ? (
+                            <img
+                              src={urlFor(rImages[0]).width(480).height(380).fit("crop").url()}
+                              alt={p.title}
+                              className="pk-lux-related-img"
+                            />
+                          ) : (
+                            <div className="pk-lux-related-img-empty">🛒</div>
+                          )}
+                          {p.badge && (
+                            <span
+                              className="pk-lux-related-badge"
+                              style={{
+                                background: (BADGE_COLORS[p.badge] || BADGE_COLORS["Best Seller"]).bg,
+                                color: (BADGE_COLORS[p.badge] || BADGE_COLORS["Best Seller"]).color,
+                              }}
+                            >
+                              {p.badge}
+                            </span>
+                          )}
+                        </div>
+                        <div className="pk-lux-related-body">
+                          <h3 className="pk-lux-related-title">{p.title}</h3>
+                          {p.shortDescription && (
+                            <p className="pk-lux-related-desc">{p.shortDescription}</p>
+                          )}
+                          <span className="pk-lux-related-link">{getAffiliateLabel(p)} →</span>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </Reveal>
                 );
               })}
@@ -405,225 +1599,14 @@ export default function BuyingGuidePage() {
         </section>
       )}
 
-      {/* ── WHO IT'S BEST FOR / WHO SHOULD AVOID ── */}
-      {(guide.whoIsItBestFor || guide.whoShouldAvoid) && (
-        <section className="pk-section" style={{ background: "var(--linen)" }}>
-          <div className="pk-container">
-            <Reveal>
-              <h2 className="pk-section-title">Is This Right for You?</h2>
-            </Reveal>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: guide.whoIsItBestFor && guide.whoShouldAvoid ? "1fr 1fr" : "1fr",
-                gap: 24,
-                marginTop: 32,
-              }}
-              className="pk-bg-card-grid"
-            >
-              {guide.whoIsItBestFor && (
-                <Reveal>
-                  <div style={{ background: "#f0faf4", borderRadius: "var(--radius-md)", padding: "24px", border: "1px solid #d4edda" }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#2d6a4f", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "var(--font-body)" }}>
-                      ✓ Best For
-                    </h3>
-                    <p style={{ fontSize: 14.5, color: "#4a3d35", lineHeight: 1.75 }}>
-                      {guide.whoIsItBestFor}
-                    </p>
-                  </div>
-                </Reveal>
-              )}
-              {guide.whoShouldAvoid && (
-                <Reveal delay={80}>
-                  <div style={{ background: "#fdf3f4", borderRadius: "var(--radius-md)", padding: "24px", border: "1px solid #f5dde0" }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#9b2335", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "var(--font-body)" }}>
-                      ○ Consider Alternatives If
-                    </h3>
-                    <p style={{ fontSize: 14.5, color: "#4a3d35", lineHeight: 1.75 }}>
-                      {guide.whoShouldAvoid}
-                    </p>
-                  </div>
-                </Reveal>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── COMMON MISTAKES ── */}
-      {commonMistakes.length > 0 && (
-        <section className="pk-section">
-          <div className="pk-container" style={{ maxWidth: 720 }}>
-            <Reveal>
-              <div className="pk-eyebrow">Avoid these errors</div>
-              <h2 className="pk-section-title">Common Mistakes</h2>
-            </Reveal>
-            <div style={{ marginTop: 28 }}>
-              {commonMistakes.map((mistake, i) => (
-                <Reveal key={i} delay={i * 50}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 12,
-                      padding: "14px 0",
-                      borderBottom: "1px solid rgba(44,24,16,0.08)",
-                    }}
-                  >
-                    <span style={{ color: "#9b2335", fontSize: 15, fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✗</span>
-                    <span style={{ fontSize: 14.5, color: "#4a3d35" }}>{mistake}</span>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── CTA BANNER ── */}
-      {(guide.ctaHeading || recommendedProducts.length > 0) && (
-        <section
-          className="pk-section"
-          style={{ background: "var(--espresso)", textAlign: "center" }}
-        >
-          <Reveal>
-            <h2 className="pk-section-title" style={{ color: "#FAF7F2" }}>
-              {guide.ctaHeading || "Ready to get organised?"}
-            </h2>
-            <p style={{ color: "rgba(250,247,242,0.7)", marginTop: 10, marginBottom: 26, fontSize: 15 }}>
-              {guide.ctaBody || "Browse our full collection of curated organisation picks."}
-            </p>
-            <Link href="/" className="pk-btn pk-btn-gold">
-              Shop All Products
-            </Link>
-          </Reveal>
-        </section>
-      )}
-
-      {/* ── FAQ ── */}
-      {faqs.length > 0 && (
-        <section className="pk-section" style={{ background: "var(--ivory)" }}>
-          <div className="pk-container" style={{ maxWidth: 720 }}>
-            <Reveal>
-              <div className="pk-eyebrow">Common questions</div>
-              <h2 className="pk-section-title">FAQ</h2>
-            </Reveal>
-            <div style={{ marginTop: 28 }}>
-              <FaqAccordion
-                items={faqs.map((f) => ({ q: f.question, a: f.answer }))}
-              />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── RELATED ARTICLES ── */}
-      {relatedArticles.length > 0 && (
-        <section className="pk-section" style={{ background: "var(--linen)" }}>
-          <div className="pk-container">
-            <Reveal>
-              <div className="pk-eyebrow">Keep reading</div>
-              <h2 className="pk-section-title">Related Articles</h2>
-            </Reveal>
-            <div className="pk-grid" style={{ marginTop: 36 }}>
-              {relatedArticles.map((post, i) => (
-                <Reveal key={post._id} delay={i * 70}>
-                  <Link href={`/blog/${post.slug?.current}`} style={{ textDecoration: "none" }}>
-                    <article className="pk-card pk-hover-lift">
-                      {post.heroImage && (
-                        <div className="pk-img-zoom" style={{ borderRadius: 15 }}>
-                          <img
-                            src={urlFor(post.heroImage).width(420).height(280).url()}
-                            alt={post.title}
-                            className="pk-card-img"
-                          />
-                        </div>
-                      )}
-                      <div className="pk-card-body">
-                        {post.category && (
-                          <span style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--gold)", fontWeight: 600 }}>
-                            {post.category}
-                          </span>
-                        )}
-                        <h3 className="pk-card-title" style={{ marginTop: 8 }}>{post.title}</h3>
-                        {post.excerpt && <p className="pk-card-desc">{post.excerpt}</p>}
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--espresso)" }}>
-                            Read More →
-                          </span>
-                        </div>
-                      </div>
-                    </article>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── RELATED GUIDES ── */}
-      {relatedGuides.length > 0 && (
-        <section className="pk-section">
-          <div className="pk-container">
-            <Reveal>
-              <div className="pk-eyebrow">Explore more</div>
-              <h2 className="pk-section-title">More Buying Guides</h2>
-            </Reveal>
-            <div className="pk-grid" style={{ marginTop: 36 }}>
-              {relatedGuides.map((g, i) => (
-                <Reveal key={g._id} delay={i * 70}>
-                  <Link href={`/buying-guides/${g.slug?.current}`} style={{ textDecoration: "none" }}>
-                    <article className="pk-card pk-hover-lift">
-                      {g.heroImage && (
-                        <div className="pk-img-zoom" style={{ borderRadius: 15 }}>
-                          <img
-                            src={urlFor(g.heroImage).width(420).height(280).url()}
-                            alt={g.title}
-                            className="pk-card-img"
-                          />
-                        </div>
-                      )}
-                      <div className="pk-card-body">
-                        {g.category && (
-                          <span style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--gold)", fontWeight: 600 }}>
-                            {g.category}
-                          </span>
-                        )}
-                        <h3 className="pk-card-title" style={{ marginTop: 8 }}>{g.title}</h3>
-                        {g.shortDescription && <p className="pk-card-desc">{g.shortDescription}</p>}
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--espresso)" }}>
-                            View Guide →
-                          </span>
-                        </div>
-                      </div>
-                    </article>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Social share */}
-      <div style={{ padding: "24px 20px", maxWidth: 820, margin: "0 auto" }}>
-        <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ fontSize: 13, color: "#6b5d52" }}>Share this guide:</span>
-          <a
-            href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}&description=${encodeURIComponent(guide.title)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pk-btn pk-btn-outline"
-            style={{ padding: "8px 18px", fontSize: 13 }}
-          >
-            Pinterest
-          </a>
-        </div>
-      </div>
-
       <Footer />
+
+      {/* STICKY MOBILE BAR */}
+      <div className="pk-sticky-buy">
+        <a href={link} target="_blank" rel="noopener noreferrer sponsored" className="pk-btn pk-btn-gold">
+          {affilCta.label} →
+        </a>
+      </div>
     </div>
   );
 }
