@@ -1647,3 +1647,78 @@ button {
     object-fit: cover;
   }
 }
+
+
+/* =============================================================
+   BUYING GUIDE ADDITIONS — appended to existing globals.css
+   Only new classes. Zero existing rules changed.
+   FILE PATH: add these lines to the END of globals.css
+============================================================= */
+
+/* ── Buying guide recommended product card (two-column: image + content) ── */
+.pk-bg-card {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+@media (max-width: 860px) {
+  .pk-bg-card {
+    grid-template-columns: 1fr;
+  }
+  /* Stack image on top of content on tablet/mobile */
+  .pk-bg-card > div:first-child {
+    min-height: 220px !important;
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pk-bg-card > div:first-child {
+    height: 180px;
+  }
+}
+
+/* ── Who it's best for / who should avoid — two-column grid ── */
+.pk-bg-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .pk-bg-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Buying guide nav link — ensure it wraps if viewport narrow ── */
+@media (max-width: 900px) {
+  /* Nav has 5 links now — reduce gap slightly on laptop */
+  .pk-nav-links {
+    gap: 18px;
+  }
+  .pk-nav-link {
+    font-size: 14px;
+  }
+}
+
+/* ── Article → Buying Guide inline card ── */
+.pk-blog-guide-card {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 600px) {
+  /* On small screens: stack image above text */
+  .pk-blog-guide-card {
+    flex-direction: column;
+  }
+  .pk-blog-guide-card-img {
+    width: 100% !important;
+    height: 160px;
+  }
+  .pk-blog-guide-card-img img {
+    height: 100%;
+    object-fit: cover;
+  }
+}
